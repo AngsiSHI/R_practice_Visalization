@@ -50,3 +50,61 @@ weather_df %>%
   )
 ```
 
+## Scales
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5) +
+  labs(
+    title = "Tempreture Plot",
+    x = "Minimum temp per day (c)",
+    y = "Maximum temp per day (c)",
+    caption = "Data from rnoaa package"
+  ) +
+  scale_x_continuous(
+    breaks = c(-15, 0, 15),
+    labels = c("-15 C", "0", "15 C")
+  ) +
+  scale_y_continuous(
+    trans = "sqrt"
+  )
+```
+
+sqrt for long tail
+or log
+
+
+Look at color scales
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5) +
+  labs(
+    title = "Tempreture Plot",
+    x = "Minimum temp per day (c)",
+    y = "Maximum temp per day (c)",
+    caption = "Data from rnoaa package"
+  ) +
+  scale_color_hue( name = "Location" ,h = c(100,300))
+```
+
+Package viridis for color manipulation
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5) +
+  labs(
+    title = "Tempreture Plot",
+    x = "Minimum temp per day (c)",
+    y = "Maximum temp per day (c)",
+    caption = "Data from rnoaa package"
+  ) +
+  viridis::scale_color_viridis(
+    discrete = TRUE,
+    name = "location"
+  )
+```
+
