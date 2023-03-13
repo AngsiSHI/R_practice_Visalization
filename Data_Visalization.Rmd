@@ -1,6 +1,6 @@
 ---
 title: "Data_Visualization"
-output: html_document
+output: github_document
 date: "2023-03-13"
 ---
 
@@ -177,6 +177,28 @@ weather_df %>%
   geom_density_ridges2()
 ```
 
+## Save and Embed
 
+Save plot
 
+```{r}
+weather_plot = 
+  weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5)
+  geom_smooth(se = FALSE)
+  
+  
+ggsave("weather_plot.pdf", weather_plot,width = 8, height = 5)
+```
+
+embedding
+
+```{r}
+weather_plot
+```
+
+```{r, fig.width=6,height=3}
+weather_plot
+```
 
