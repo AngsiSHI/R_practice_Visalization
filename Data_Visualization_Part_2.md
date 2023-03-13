@@ -5,6 +5,7 @@ Data_Visualization_Part_2
 ``` r
 library(tidyverse)
 library(patchwork)
+library(dplyr)
 ```
 
 ``` r
@@ -287,3 +288,37 @@ tmax_date_p =
     ## Warning: Removed 3 rows containing missing values (`geom_point()`).
 
 <img src="Data_Visualization_Part_2_files/figure-gfm/unnamed-chunk-12-1.png" width="90%" />
+
+## data manipulation
+
+Change the order, ggplot turns characters in to factors have to use
+package forcats
+
+``` r
+weather_df %>%
+  mutate(name = forcats::fct_relevel(name, c("Waikiki_HA", "CentralPark_NY", "Waterhole_WA"))) %>% 
+  ggplot(aes(x = name, y = tmax)) + 
+  geom_violin(aes(fill = name), color = "blue", alpha = .5) + 
+  theme(legend.position = "bottom")
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (`stat_ydensity()`).
+
+<img src="Data_Visualization_Part_2_files/figure-gfm/unnamed-chunk-13-1.png" width="90%" />
+
+tmin and t max together
+
+``` r
+weather_df %>% 
+  filter(name == "CentralPark_NY") %>% 
+  pivot_longer(
+    tmax:tmin,
+    names_to = "observation",
+    values_to = "temperatures"
+  ) %>% 
+  ggplot(aes(x = temperatures, fill = observation)) +
+  geom_density(alpha = .5) +
+  facet_grid(. ~ name)
+```
+
+<img src="Data_Visualization_Part_2_files/figure-gfm/unnamed-chunk-14-1.png" width="90%" />
