@@ -1,0 +1,182 @@
+---
+title: "Data_Visualization"
+output: html_document
+date: "2023-03-13"
+---
+
+```{r steup, message=FALSE}
+library(tidyverse)
+library(ggridges)
+```
+
+
+## load weather data
+
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USC00519397", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2017-01-01",
+    date_max = "2017-12-31") %>%
+  mutate(
+    name = recode(
+      id, 
+      USW00094728 = "CentralPark_NY", 
+      USC00519397 = "Waikiki_HA",
+      USS0023B17S = "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) %>%
+  select(name, id, everything())
+```
+
+## Scatterplots
+
+```{r}
+ggplot(weather_df,aes(x = tmin, y = tmax)) +
+  geom_point()
+```
+
+New approach, same plot
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+```
+
+Save and edit a plot object
+
+```{r}
+weather_plot = weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax))
+
+weather_plot + geom_point()
+```
+
+## Advanced Scatterplot
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point() + 
+  geom_smooth(se = FALSE)
+```
+
+what about the aes placement 
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name)) + 
+  geom_smooth(se = FALSE)
+```
+
+Let's facet some things!!
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point() + 
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name)
+```
+
+  facet_grid(. ~ name) row first then column
+  
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point() + 
+  geom_smooth(se = FALSE) +
+  facet_grid(name ~ .)
+```
+
+alpha transpirency 
+size line 
+
+New graph for temp and date
+LOOK THIS!!!!!!!!!!! 
+size to certain variable
+color to seprerate variable
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_point(aes(size = prcp), alpha = .2) +
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ name)
+```
+
+## neat geom
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_hex()
+```
+## Univariate plots
+
+Histogram
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin)) +
+  geom_histogram()
+```
+
+add color 
+
+use fill not color
+use dodge for full comp
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_histogram(position = "dodge") 
+```
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_histogram() +
+  facet_grid(. ~ name)
+```
+
+use density for smooth histogram
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_density(alpha = .3)
+```
+
+Box Plot
+
+can give x as categorical variable 
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = name, y = tmin)) +
+  geom_boxplot()
+```
+
+Trendy plots, like a box plot
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = name, y = tmin, fill = name, alpha = .4)) +
+  geom_violin() +
+  stat_summary(fun = "median")
+```
+
+Ridge plots
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = name)) +
+  geom_density_ridges2()
+```
+
+
+
+
